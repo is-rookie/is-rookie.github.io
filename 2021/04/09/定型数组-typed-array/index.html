@@ -1,0 +1,562 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="yanxiaolazy">
+  <meta name="keywords" content="">
+  
+  <title>定型数组(typed array) - YanXiaoLazy</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"yanxiaolazy.github.io","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"025fc8e8fb3b97bae422a16acb228967","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="YanXiaoLazy" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YanXiaoLazy</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="定型数组(typed array)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      yanxiaolazy
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-04-09 14:12" pubdate>
+        2021年4月9日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">定型数组(typed array)</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年6月30日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <html><head></head><body><h1 id="定型数组（typed-array"><a href="#定型数组（typed-array" class="headerlink" title="定型数组（typed array)"></a>定型数组（typed array)</h1><p>定型数组<code>（typed array）</code>是<code>ECMAScript</code>新增的结构，目的是提升向原生库传输数据的效率。实际上，<code>JavaScript</code>并没有<code>"TypedArray"</code>类型，它所指的其实是一种特殊的包含数值类型的数组</p>
+<h2 id="ArrayBuffer"><a href="#ArrayBuffer" class="headerlink" title="ArrayBuffer"></a>ArrayBuffer</h2><p><code>ArrayBuffer</code>是所有定型数组及视图引用的<strong>基本单位</strong>。</p>
+<blockquote>
+<p><code>SharedArrayBuffer</code>是<code>ArrayBuffer</code>的一个变体，可以无须复制就在执行上下文间传递它</p>
+</blockquote>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> buf = <span class="hljs-keyword">new</span> <span class="hljs-built_in">ArrayBuffer</span>(<span class="hljs-number">2</span>) <span class="hljs-comment">//在内存中分配2个字节</span><br><span class="hljs-built_in">console</span>.log(buf)	<span class="hljs-comment">//ArrayBuffer(2) {}</span><br><span class="hljs-built_in">console</span>.log(buf.byteLength) <span class="hljs-comment">//2 //返回分配的字节长度</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p><code>ArrayBuffer</code>一经创建就不能再调整大小</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> buf = <span class="hljs-keyword">new</span> <span class="hljs-built_in">ArrayBuffer</span>(<span class="hljs-number">16</span>)<br><span class="hljs-keyword">const</span> buf2 = buf.slice(<span class="hljs-number">4</span>, <span class="hljs-number">12</span>) <span class="hljs-comment">//但可以使用slice()复制部分到新的实例中</span><br><span class="hljs-built_in">console</span>.log(buf2.byteLength) <span class="hljs-comment">//8</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p><code>ArrayBuffer</code>分配的堆内存可以被当成垃圾回收，不用手动释放（相比于<code>C/C++</code>的<code>malloc()</code>）</p>
+<h2 id="DataView"><a href="#DataView" class="headerlink" title="DataView"></a>DataView</h2><p><code>DataView</code>用于读写<code>ArrayBuffer</code>的视图。专为文件<code>I/O</code>和网络<code>I/O</code>设计，其<code>API</code>支持对缓冲数据的高度控制，但较其他类型的视图，性能差一些。</p>
+<p>必须对已有的<code>ArrayBuffer</code>进行读/写才能创建<code>DataView</code>实例</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> buf = <span class="hljs-keyword">new</span> <span class="hljs-built_in">ArrayBuffer</span>(<span class="hljs-number">16</span>)<br><span class="hljs-keyword">const</span> dv = <span class="hljs-keyword">new</span> <span class="hljs-built_in">DataView</span>(buf) <span class="hljs-comment">//默认使用整个ArrayBuffer</span><br><span class="hljs-built_in">console</span>.log(dv) <span class="hljs-comment">//DataView(16) {} </span><br><span class="hljs-built_in">console</span>.log(dv.byteLength) <span class="hljs-comment">//16</span><br><span class="hljs-built_in">console</span>.log(dv.byteOffset) <span class="hljs-comment">//0</span><br><span class="hljs-built_in">console</span>.log(dv.buffer === buf) <span class="hljs-comment">//true</span><br><br><span class="hljs-comment">//使用部分ArrayBuffer</span><br><span class="hljs-keyword">const</span> dv2 = <span class="hljs-keyword">new</span> <span class="hljs-built_in">DataView</span>(buf, <span class="hljs-comment">/*offset*/</span><span class="hljs-number">2</span>, <span class="hljs-comment">/*length*/</span><span class="hljs-number">4</span>)<br><span class="hljs-built_in">console</span>.log(dv2) <span class="hljs-comment">//DataView(4) {}</span><br><span class="hljs-built_in">console</span>.log(dv2.byteLength) <span class="hljs-comment">//4</span><br><span class="hljs-built_in">console</span>.log(dv2.byteOffset) <span class="hljs-comment">//2</span><br><span class="hljs-built_in">console</span>.log(dv2.buffer === buf) <span class="hljs-comment">//true</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>读取缓冲，需要几个<code>ElementType</code>组件，类似于<code>C</code>中的类型</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> buf = <span class="hljs-keyword">new</span> <span class="hljs-built_in">ArrayBuffer</span>(<span class="hljs-number">16</span>)<br><span class="hljs-keyword">const</span> dv = <span class="hljs-keyword">new</span> <span class="hljs-built_in">DataView</span>(buf, <span class="hljs-number">0</span>, <span class="hljs-number">8</span>)<br><br><span class="hljs-comment">//说明DataView的实例默认值初始值为0</span><br><span class="hljs-built_in">console</span>.log(dv.getInt8(<span class="hljs-number">0</span>)) <span class="hljs-comment">//0 //以8位有符号整数进行读取,读取第一个字节</span><br><span class="hljs-built_in">console</span>.log(dv.getInt8(<span class="hljs-number">1</span>)) <span class="hljs-comment">//0</span><br><span class="hljs-built_in">console</span>.log(dv.getInt16(<span class="hljs-number">0</span>)) <span class="hljs-comment">//0 //以16位有符号整数进行读取,读取两个字节</span><br><span class="hljs-comment">//写入</span><br>dv.setInt8(<span class="hljs-number">1</span>, <span class="hljs-number">255</span>) <span class="hljs-comment">//给第二个字节写入255，二进制每一位都是1</span><br><span class="hljs-built_in">console</span>.log(dv.getInt8(<span class="hljs-number">1</span>)) <span class="hljs-comment">//-1 //由于是有符号的读，会被当做二补数（即反码）处理，字节开头的1被当作符号位</span><br><span class="hljs-built_in">console</span>.log(dv.getUint8(<span class="hljs-number">1</span>)) <span class="hljs-comment">//255 //无符号读取</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>除了上述的类型（<code>Int8, Uint8, Int16</code>）还有<code>Uint16,Int32, Uint32, Float32, Float64 </code>。默认的字节序为大端字节序。传递第二个参数可以决定字节序，为<code>true</code>时，则启用小端字节序</p>
+<blockquote>
+<p><code>DataView</code> 只支持两种约定：大端字节序和小端字节序。大端字节序也称为“网络字节序”，意思是最高有效位保存在第一个字节，而最低有效位保存在最后一个字节。小端字节序正好相反，即最低有效位保存在第一个字节，最高有效位保存在最后一个字节。</p>
+</blockquote>
+<p><code>DataView</code>的读、写操作都必须满足充足的缓冲区，如果越界会抛出<code>RangError</code></p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> buf = <span class="hljs-keyword">new</span> <span class="hljs-built_in">ArrayBuffer</span>(<span class="hljs-number">2</span>)<br><span class="hljs-keyword">const</span> dv = <span class="hljs-keyword">new</span> <span class="hljs-built_in">DataView</span>(buf) <span class="hljs-comment">//这里为2个字节</span><br><span class="hljs-comment">//尝试越界读取4个字节</span><br>dv.getInt32(<span class="hljs-number">0</span>) <span class="hljs-comment">//错误 RangeError: Offset is outside the bounds of the DataView</span><br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="定型数组"><a href="#定型数组" class="headerlink" title="定型数组"></a>定型数组</h2><p>定型数组是另一种形式的<code>ArrayBffer</code>视图。设计定型数组的目的就是提高与 <code>WebGL</code> 等原生库交换二进制数据的效率。</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">//创建一个12字节的缓冲</span><br><span class="hljs-keyword">const</span> buf = <span class="hljs-keyword">new</span> <span class="hljs-built_in">ArrayBuffer</span>(<span class="hljs-number">12</span>)<br><span class="hljs-comment">//创建一个引用buf缓冲的Int32Array</span><br><span class="hljs-keyword">const</span> ints = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Int32Array</span>(buf)<br><span class="hljs-built_in">console</span>.log(ints) <span class="hljs-comment">//Int32Array(3) [0, 0, 0]</span><br><span class="hljs-comment">//length属性，打印长度</span><br><span class="hljs-built_in">console</span>.log(ints.length) <span class="hljs-comment">//3</span><br><span class="hljs-comment">//与DataView一样，也有一个指向关联缓冲的引用</span><br><span class="hljs-built_in">console</span>.log(ints.buffer) <span class="hljs-comment">//ArrayBuffer(12) {}</span><br><br><span class="hljs-comment">//创建一个指定长度的Int32Array</span><br><span class="hljs-keyword">const</span> ints1 = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Int32Array</span>(<span class="hljs-number">6</span>)<br><span class="hljs-built_in">console</span>.log(ints1.length) <span class="hljs-comment">//6</span><br><br><span class="hljs-comment">//传入数组初始化Int32Array</span><br><span class="hljs-keyword">const</span> ints2 = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Int32Array</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>])<br><span class="hljs-built_in">console</span>.log(ints2.length) <span class="hljs-comment">//4</span><br><span class="hljs-built_in">console</span>.log(ints2[<span class="hljs-number">1</span>]) <span class="hljs-comment">//2</span><br><br><span class="hljs-comment">//通过&lt;ElementType&gt;.from和&lt;ElementType&gt;.to初始化Int32Array</span><br><span class="hljs-keyword">const</span> ints3 = <span class="hljs-built_in">Int32Array</span>.from(ints2)<br><span class="hljs-keyword">const</span> ints4 = <span class="hljs-built_in">Int32Array</span>.of(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>)<br><span class="hljs-built_in">console</span>.log(ints3.length) <span class="hljs-comment">//4</span><br><span class="hljs-built_in">console</span>.log(ints4.length) <span class="hljs-comment">//4</span><br><span class="hljs-built_in">console</span>.log(ints3[<span class="hljs-number">1</span>]) <span class="hljs-comment">//20</span><br><span class="hljs-built_in">console</span>.log(ints4[<span class="hljs-number">1</span>]) <span class="hljs-comment">//20</span><br><br><span class="hljs-comment">//BYTES_PER_ELEMENT属性返回类型数组中每个元素的大小</span><br><span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">Int32Array</span>.BYTES_PER_ELEMENT) <span class="hljs-comment">//4</span><br><span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">Float64Array</span>.BYTES_PER_ELEMENT) <span class="hljs-comment">//8</span><br><span class="hljs-built_in">console</span>.log(ints4.BYTES_PER_ELEMENT) <span class="hljs-comment">//4</span><br></code></pre></td></tr></tbody></table></figure>
+<p>定型数组支持数组的方法和属性，包括<code>Symbol.iterator</code>符号属性，但是没有<code>concat(), poop(), push(), shift(), unshift(), splice()</code>。定型数组提供了两个方法可以实现复制数据：<code>set()</code>和<code>subarray()</code></p>
+<p><code>set()</code>从提供的数组或定型数组中把值复制到当前的定型数组中指定索引位置</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> container = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Int8Array</span>(<span class="hljs-number">8</span>)<br><span class="hljs-comment">//复制到从偏移量为2的位置开始的地方，默认偏移量为0</span><br>container.set(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Int8Array</span>([<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]), <span class="hljs-number">2</span>)<br><span class="hljs-built_in">console</span>.log(container) <span class="hljs-comment">//[0, 0, 2, 3, 4, 5, 0, 0]</span><br><br><span class="hljs-comment">//溢出会抛出错误</span><br>container.set(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Int8Array</span>([<span class="hljs-number">3</span>, <span class="hljs-number">4</span>,<span class="hljs-number">5</span>]), <span class="hljs-number">7</span>) <span class="hljs-comment">//错误 RangeError: offset is out of bounds</span><br></code></pre></td></tr></tbody></table></figure>
+<p><code>subarray()</code>会基于原始定型数组返回复制的值组成新的定型数组</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> source = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Int8Array</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>])<br><span class="hljs-comment">//复制索引2到4，左闭右开</span><br><span class="hljs-keyword">const</span> newSource = source.subarray(<span class="hljs-number">2</span>, <span class="hljs-number">4</span>)<br><span class="hljs-built_in">console</span>.log(newSource) <span class="hljs-comment">// [3, 4]</span><br><span class="hljs-built_in">console</span>.log(newSource) <span class="hljs-comment">//Int8Array(2) [3, 4]</span><br></code></pre></td></tr></tbody></table></figure>
+<p>除了<code>8</code>种元素类型，还有一种”夹板“数组类型：<code>Uint8ClampedArray</code>，用于解决溢出问题。该类型不允许任何方向溢出，超出最大值<code>255</code>的值会被向下舍入为<code>255</code>，而小于最小值<code>0</code>的值会被向上舍入为<code>0</code></p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> clampedInts = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Uint8ClampedArray</span>([-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">255</span>, <span class="hljs-number">256</span>])<br><span class="hljs-built_in">console</span>.log(clampedInts) <span class="hljs-comment">//[0, 0, 255, 255]</span><br></code></pre></td></tr></tbody></table></figure>
+<blockquote>
+<p>除非做的和<code>canvas</code>相关开发，否则不要使用它</p>
+</blockquote>
+</body></html>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/javascript/">javascript</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/javascript/">javascript</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/04/20/%E4%BD%BF%E7%94%A8canal%E8%BF%9E%E6%8E%A5kafka/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用canal连接kafka</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/03/27/%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87%EF%BC%8C%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%92%8C%E5%9E%83%E5%9C%BE%E6%B8%85%E7%90%86/">
+                        <span class="hidden-mobile">执行上下文，作用域和垃圾清理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+  <div class="col-lg-7 mx-auto nopadding-x-md">
+    <div class="container custom post-custom mx-auto">
+       <div class="rounded d-block mx-auto mt-5"> <div> <p>读后有收获可以支付宝请作者喝咖啡</p> <img src="/img/zhifubao.jpg" srcset="/img/loading.gif" lazyload style="width:150px; height:150px;"> </div> </div> 
+    </div>
+  </div>
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?025fc8e8fb3b97bae422a16acb228967";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
